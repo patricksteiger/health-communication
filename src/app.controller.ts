@@ -1,11 +1,11 @@
 import { Controller, Get, Logger, OnModuleInit } from '@nestjs/common';
 import { Client, ClientKafka, EventPattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { kafkaConfig } from './config/kafka.config';
+import { KAFKA_CONFIG, KAFKA_TOPIC } from './config/kafka.config';
 
 @Controller()
 export class AppController implements OnModuleInit {
-  @Client(kafkaConfig)
+  @Client(KAFKA_CONFIG)
   client: ClientKafka;
 
   private logger: Logger;
@@ -15,7 +15,7 @@ export class AppController implements OnModuleInit {
   }
 
   onModuleInit() {
-    const requestPatterns = ['entity-created'];
+    const requestPatterns = [KAFKA_TOPIC];
     requestPatterns.forEach((pattern) =>
       this.client.subscribeToResponseOf(pattern),
     );
@@ -23,10 +23,10 @@ export class AppController implements OnModuleInit {
 
   @Get()
   getHello() {
-    this.client.emit<string>('entity-created', 'date: ' + new Date());
+    this.client.emit<string>(KAFKA_TOPIC, 'date: ' + new Date());
   }
 
-  @EventPattern('entity-created')
+  @EventPattern(KAFKA_TOPIC)
   async handleEntityCreated(payload: any) {
     this.logger.log(payload);
   }

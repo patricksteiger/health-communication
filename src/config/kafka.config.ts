@@ -1,14 +1,16 @@
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 
-export const kafkaConfig: KafkaOptions = {
+export const KAFKA_CONFIG: KafkaOptions = {
   transport: Transport.KAFKA,
   options: {
     client: {
-      brokers: ['127.0.0.1:9092'],
+      brokers: ['localhost:9092'],
     },
     consumer: {
-      groupId: '1',
+      groupId: '0',
       allowAutoTopicCreation: true,
     },
   },
 };
+
+export const KAFKA_TOPIC = 'quickstart-events';

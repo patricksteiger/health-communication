@@ -1,4 +1,4 @@
-import { KafkaOptions, Transport } from '@nestjs/microservices';
+import { ClientOptions, KafkaOptions, Transport } from '@nestjs/microservices';
 
 export const KAFKA_CONFIG: KafkaOptions = {
   transport: Transport.KAFKA,
@@ -6,11 +6,44 @@ export const KAFKA_CONFIG: KafkaOptions = {
     client: {
       brokers: ['localhost:9092'],
     },
+  },
+};
+
+export const CLIENT_CONFIG: ClientOptions = {
+  transport: Transport.KAFKA,
+  options: {
+    client: {
+      clientId: 'hero-server',
+      brokers: ['localhost:9092'],
+    },
     consumer: {
-      groupId: '0',
-      allowAutoTopicCreation: true,
+      groupId: 'hero-consumer-server',
     },
   },
 };
 
-export const KAFKA_TOPIC = 'quickstart-events';
+export const KAFKA_TOPIC = 'Orders';
+
+export class KafkaConfig {
+  clientId: string;
+  brokers: string[];
+  groupId: string;
+}
+
+export class KafkaPayload {
+  public body: any;
+  public messageId: string;
+  public messageType: string;
+  public topicName: string;
+  public createdTime?: string;
+
+  create?(messageId, body, messageType, topicName): KafkaPayload {
+    return {
+      messageId,
+      body,
+      messageType,
+      topicName,
+      createdTime: new Date().toISOString(),
+    };
+  }
+}

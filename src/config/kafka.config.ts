@@ -1,4 +1,5 @@
 import { ClientOptions, KafkaOptions, Transport } from '@nestjs/microservices';
+import { ConsumerConfig } from 'kafkajs';
 
 export const KAFKA_CONFIG: KafkaOptions = {
   transport: Transport.KAFKA,
@@ -20,6 +21,10 @@ export const CLIENT_CONFIG: ClientOptions = {
       groupId: 'hero-consumer-server',
     },
   },
+};
+
+const CONSUMER_CFG: ConsumerConfig = {
+  groupId: '',
 };
 
 export const KAFKA_TOPIC = 'Orders';

@@ -4,7 +4,13 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { Consumer, Kafka, Producer } from 'kafkajs';
+import {
+  Admin,
+  Consumer,
+  ConsumerSubscribeTopic,
+  Kafka,
+  Producer,
+} from 'kafkajs';
 import { KafkaConfig, KafkaPayload } from '../config/kafka.config';
 import {
   SUBSCRIBER_FN_REF_MAP,
@@ -18,12 +24,14 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka: Kafka;
   private producer: Producer;
   private consumer: Consumer;
+  private admin: Admin;
 
   constructor(private readonly kafkaConfig: KafkaConfig) {
     this.kafka = new Kafka({
       clientId: this.kafkaConfig.clientId,
       brokers: this.kafkaConfig.brokers,
     });
+    this.admin = this.kafka.admin();
     this.producer = this.kafka.producer();
     this.consumer = this.kafka.consumer({
       groupId: this.kafkaConfig.groupId,
@@ -34,9 +42,13 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   async onModuleInit(): Promise<void> {
     await this.producer.connect();
     await this.consumer.connect();
+    await this.admin.connect();
     SUBSCRIBER_FN_REF_MAP.forEach(async (functionRef, topic) => {
       // attach the function with kafka topic name
-      await this.consumer.subscribe({ topic: topic, fromBeginning: false });
+      const subscribeOptions: ConsumerSubscribeTopic = {
+        fromBeginning: false,
+      };
+      await this.consumer.subscribe(subscribeOptions);
     });
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
@@ -77,5 +89,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy(): Promise<void> {
     await this.producer.disconnect();
     await this.consumer.disconnect();
+    await this.admin.disconnect();
   }
 }

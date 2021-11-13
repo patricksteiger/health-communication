@@ -1,6 +1,3 @@
-import { Inject } from '@nestjs/common';
-import { ConsumerService } from '../consumer/consumer.service';
-
 export const SUBSCRIBER_FN_REF_MAP = new Map();
 export const SUBSCRIBER_FIXED_FN_REF_MAP = new Map();
 export const SUBSCRIBER_OBJ_REF_MAP = new Map();

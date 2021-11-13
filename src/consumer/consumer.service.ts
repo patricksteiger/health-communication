@@ -9,9 +9,4 @@ export class ConsumerService {
   constructor() {
     this.logger = new Logger(this.constructor.name);
   }
-
-  @SubscribeTo(KAFKA_TOPIC)
-  async handleTopic(payload: KafkaPayload) {
-    console.log(payload);
-  }
 }

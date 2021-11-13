@@ -11,7 +11,7 @@ import {
   Kafka,
   Producer,
 } from 'kafkajs';
-import { KafkaConfig, KafkaPayload } from '../config/kafka.config';
+import { KafkaConfig, KafkaPayload, KAFKA_TOPIC } from '../config/kafka.config';
 import {
   SUBSCRIBER_FN_REF_MAP,
   SUBSCRIBER_OBJ_REF_MAP,
@@ -46,6 +46,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     SUBSCRIBER_FN_REF_MAP.forEach(async (functionRef, topic) => {
       // attach the function with kafka topic name
       const subscribeOptions: ConsumerSubscribeTopic = {
+        topic: KAFKA_TOPIC,
         fromBeginning: false,
       };
       await this.consumer.subscribe(subscribeOptions);

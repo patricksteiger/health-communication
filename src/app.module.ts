@@ -4,14 +4,11 @@ import { AppService } from './app.service';
 import { KafkaModule } from './kafka/kafka.module';
 import { ConsumerModule } from './consumer/consumer.module';
 import { ProducerModule } from './producer/producer.module';
+import { KAFKA_MODULE_CONFIG } from './config/kafka.config';
 
 @Module({
   imports: [
-    KafkaModule.register({
-      clientId: 'test-app-client',
-      brokers: ['localhost:9092'],
-      groupId: 'test-app-group',
-    }),
+    KafkaModule.register(KAFKA_MODULE_CONFIG),
     ConsumerModule,
     ProducerModule,
   ],

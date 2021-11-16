@@ -33,9 +33,10 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     });
     this.admin = this.kafka.admin();
     this.producer = this.kafka.producer();
-    this.consumer = this.kafka.consumer({
+    const consumerCfg = {
       groupId: this.kafkaConfig.groupId,
-    });
+    };
+    this.consumer = this.kafka.consumer(consumerCfg);
     this.logger = new Logger(this.constructor.name);
   }
 
@@ -47,7 +48,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
       // attach the function with kafka topic name
       const subscribeOptions: ConsumerSubscribeTopic = {
         topic: KAFKA_TOPIC,
-        fromBeginning: false,
+        fromBeginning: true,
       };
       await this.consumer.subscribe(subscribeOptions);
     });
@@ -62,14 +63,14 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async sendMessage(kafkaTopic: string, kafkaMessage: KafkaPayload) {
-    //await this.producer.connect();
+    await this.producer.connect();
     const metadata = await this.producer
       .send({
         topic: kafkaTopic,
         messages: [{ value: JSON.stringify(kafkaMessage) }],
       })
       .catch((e) => console.error(e.message, e));
-    //await this.producer.disconnect();
+    await this.producer.disconnect();
     return metadata;
   }
 

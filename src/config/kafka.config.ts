@@ -10,6 +10,12 @@ export const KAFKA_CONFIG: KafkaOptions = {
   },
 };
 
+export const KAFKA_MODULE_CONFIG = {
+  clientId: 'test-app-client',
+  brokers: ['localhost:9092'],
+  groupId: 'hero-consumer-server',
+}
+
 export const CLIENT_CONFIG: ClientOptions = {
   transport: Transport.KAFKA,
   options: {
@@ -17,9 +23,9 @@ export const CLIENT_CONFIG: ClientOptions = {
       clientId: 'hero-server',
       brokers: ['localhost:9092'],
     },
-    consumer: {
-      groupId: 'hero-consumer-server',
-    },
+    //consumer: {
+    //  groupId: 'hero-consumer-server',
+    //},
   },
 };
 
